@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+</head>
+<body>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout">
+</form>
+<div th:switch="${users}">
+    <h2 th:case="null">No users found!</h2>
+    <div th:case="*">
+        <h2>Users</h2>
+        <table style="width: 30%;" border="2" cellpadding="1">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Age</th>
+                <th>E-mail</th>
+                <th>Edit user</th>
+                <th>Delete user</th>
+
+            </tr>
+            </thead>
+
+
+            <th:block th:each="obj: ${users}">
+                <tbody>
+                <tr>
+                    <td th:text="${obj.getId()}"></td>
+                    <td th:text="${obj.getFirstName()}"></td>
+                    <td th:text="${obj.getLastName()}"></td>
+                    <td th:text="${obj.getAge()}"></td>
+                    <td th:text="${obj.getEmail()}"></td>
+                    <!--                    <td><a th:href="@{user-update/{id}(id=${obj.getId()})}">Edit</a></td>-->
+                    <td>
+                        <form id="formUpdateUser"
+                              th:attrappend="id=${obj.getId()}"
+                              th:method="GET"
+                              th:action="@{/admin/user-update/{id}(id=${obj.getId()})}">
+                            <input type="submit" value="EDIT">
+                        </form>
+                    </td>
+                    <td>
+                        <form id="formDeleteUser"
+                              th:attrappend="id=${obj.getId()}"
+                              th:method="DELETE"
+                              th:action="@{/admin/user-delete/{id}(id=${obj.getId()})}">
+                            <input type="submit" value="DELETE">
+                        </form>
+                    </td>
+
+                </tr>
+                </tbody>
+            </th:block>
+        </table>
+    </div>
+    <p><a href="/admin/user-create">Create user</a></p>
+    </div>
+</body>
+</html>
