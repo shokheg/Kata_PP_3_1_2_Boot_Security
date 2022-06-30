@@ -21,6 +21,7 @@
                 <th>Last name</th>
                 <th>Age</th>
                 <th>E-mail</th>
+                <th>Roles</th>
                 <th>Edit user</th>
                 <th>Delete user</th>
 
@@ -36,7 +37,9 @@
                     <td th:text="${obj.getLastName()}"></td>
                     <td th:text="${obj.getAge()}"></td>
                     <td th:text="${obj.getEmail()}"></td>
-                    <!--                    <td><a th:href="@{user-update/{id}(id=${obj.getId()})}">Edit</a></td>-->
+                    <td th:if="${obj.getRoles() != null}">
+                        <a th:each="role : ${obj.getRoles()}" th:text="${role.getName()} + ' '"></a>
+                    </td>
                     <td>
                         <form id="formUpdateUser"
                               th:attrappend="id=${obj.getId()}"
