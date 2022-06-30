@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +22,13 @@ public class UserController {
 
     private final UserService userService;
     private final RoleRepository roleRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserService userService, RoleRepository roleRepository) {
+    public UserController(UserService userService, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("")
@@ -47,6 +50,7 @@ public class UserController {
 
     @PostMapping(value = "/user-create")
     public String createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.saveUser(user);
         return "redirect:/admin";
     }
@@ -69,11 +73,19 @@ public class UserController {
 
     @PatchMapping("/user-update")
     public String updateUser(User user) {
+        User oldUser = userService
+                .findById(user.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + user.getId()));
+
+        if (!user.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        } else {
+            user.setPassword(oldUser.getPassword());
+        }
+
         userService.saveUser(user);
         return "redirect:/admin";
     }
-
-
 
 
 }

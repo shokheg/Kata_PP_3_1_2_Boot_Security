@@ -39,8 +39,8 @@ public class User implements UserDetails {
     @ManyToMany  //todo возможно нужен JOIN TABLE
     @Column(name = "role")
     private Collection<Role> roles;
-    @Column(name = "status")
-    private boolean isActive;
+//    @Column(name = "status")
+//    private boolean isActive;
 
     @Override //todo
     public Collection<? extends GrantedAuthority> getAuthorities() {

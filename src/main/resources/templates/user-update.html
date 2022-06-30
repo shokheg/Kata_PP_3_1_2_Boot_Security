@@ -24,10 +24,10 @@
     <input type="text" th:field="*{age}" id="age" placeholder="Age">
     <br/>
     <label for="email">Email</label>
-    <input type="text" th:field="*{email}" id="email" placeholder="E-mail">
+    <input type="email" th:field="*{email}" id="email" placeholder="E-mail">
     <br/>
     <label for="password">Password</label>
-    <input type="text" th:field="*{password}" id="password" placeholder="Password">
+    <input type="password" th:field="*{password}" id="password" placeholder="Password">
     <br/>
     <label>Roles</label>
 
@@ -38,9 +38,9 @@
         </option>
     </select>
     <br/>
-    <label for="active">Status</label>
-    <input type="checkbox" name="active" id="active" checked="checked" th:checked="${isActive}"/>
-    ` <br/>
+<!--    <label for="active">Status</label>-->
+<!--    <input type="checkbox" name="active" id="active" checked="checked" th:checked="${isActive}"/>-->
+<!--    ` <br/>-->
     <input type="submit" value="Update User">
 </form>
 </body>
