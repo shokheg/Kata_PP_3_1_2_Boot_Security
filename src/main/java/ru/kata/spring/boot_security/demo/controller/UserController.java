@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -83,8 +84,10 @@ public class UserController {
         return "user-update";
     }
 
-    @PatchMapping("/admin/user-update")
+    @PatchMapping("/admin/user-update/{id}")
     public String updateUser(User user) {
+
+        System.out.println("++++++++++++++ВХОДЯЩИЙ ЮЗЕР ИЗ МОДАЛКИ EDIT++++++++++++++++++++++" + user.toString()+user.getPassword() + user.getEmail() + user.getFirstName());
         User oldUser = userService
                 .findById(user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + user.getId()));

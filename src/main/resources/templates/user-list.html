@@ -5,71 +5,273 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Users</title>
+
+
+    <style>
+        .tab-content {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 10px;
+        }
+
+        .nav-tabs {
+            margin-bottom: 0;
+        }
+    </style>
 </head>
 <body>
-<form th:action="@{/logout}" method="post">
-    <input type="submit" value="Logout">
-</form>
-<div th:switch="${users}">
-    <h2 th:case="null">No users found!</h2>
-    <div th:case="*">
-        <h2>Users</h2>
-        <table style="width: 30%;" border="2" cellpadding="1">
-            <thead>
-            <tr>
-                <th>Id</th>
-                <th>First name</th>
-                <th>Last name</th>
-                <th>Age</th>
-                <th>E-mail</th>
-                <th>Roles</th>
-                <th>Edit user</th>
-                <th>Delete user</th>
 
-            </tr>
-            </thead>
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">admin@mail.ru with roles: ADMIN USER</a>
+    <!--  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">-->
+    <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" href="/logout">Logout</a>
+        </li>
+    </ul>
+</nav>
+
+<div class="container-fluid">
+    <div class="row h-100">
+        <nav class="col-md-2 sidebar ml-0 mr-0 pl-0 pr-0">
+            <ul class="nav nav-pills flex-column" >
+                <li class="nav-item  pt-3">
+                    <a class="nav-link active" href="/admin">
+                        <span data-feather="settings"></span>
+                        Admin <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user">
+                        <span data-feather="user"></span>
+                        User
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
 
 
-            <th:block th:each="obj: ${users}">
-                <tbody>
-                <tr>
-                    <td th:text="${obj.getId()}"></td>
-                    <td th:text="${obj.getFirstName()}"></td>
-                    <td th:text="${obj.getLastName()}"></td>
-                    <td th:text="${obj.getAge()}"></td>
-                    <td th:text="${obj.getEmail()}"></td>
-                    <td th:if="${obj.getRoles() != null}">
-                        <a th:each="role : ${obj.getRoles()}" th:text="${role.getName()} + ' '"></a>
-                    </td>
-                    <td>
-                        <form id="formUpdateUser"
-                              th:attrappend="id=${obj.getId()}"
-                              th:method="GET"
-                              th:action="@{/admin/user-update/{id}(id=${obj.getId()})}">
-                            <input type="submit" value="EDIT">
-                        </form>
-                    </td>
-                    <td>
-                        <form id="formDeleteUser"
-                              th:attrappend="id=${obj.getId()}"
-                              th:method="DELETE"
-                              th:action="@{/admin/user-delete/{id}(id=${obj.getId()})}">
-                            <input type="submit" value="DELETE">
-                        </form>
-                    </td>
+        <main role="main" class="col-md-10 pt-3 px-4 bg-light">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
+                <h1 class="h2">Admin panel</h1>
+            </div>
 
-                </tr>
-                </tbody>
-            </th:block>
-        </table>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#usertable">User table</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#create">New user</a>
+                </li>
+            </ul>
+
+
+            <div class="tab-content bg-white px-0 py-0 ">
+
+
+                <div class="tab-pane fade show active" id="usertable">
+                    <div class="container pt-0 ml-0 mr-0">
+                        <div class="row px-3 py-3 bg-light border-bottom">
+
+                            <h5>All users</h5>
+
+                        </div>
+                        <div class="row">
+                            <div class="table-responsive bg-white px-3 py-3">
+                                <table class="table table-striped table-sm">
+
+                                    <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>First name</th>
+                                        <th>Last name</th>
+                                        <th>Age</th>
+                                        <th>E-mail</th>
+                                        <th>Roles</th>
+                                        <th>Edit user</th>
+                                        <th>Delete user</th>
+                                    </tr>
+                                    </thead>
+                                    <th:block th:each="obj: ${users}">
+
+                                        <tr>
+                                            <td th:text="${obj.getId()}"></td>
+                                            <td th:text="${obj.getFirstName()}"></td>
+                                            <td th:text="${obj.getLastName()}"></td>
+                                            <td th:text="${obj.getAge()}"></td>
+                                            <td th:text="${obj.getEmail()}"></td>
+                                            <td th:if="${obj.getRoles() != null}">
+                                                <a th:each="role : ${obj.getRoles()}"
+                                                   th:text="${role.getName()} + ' '"></a>
+                                            </td>
+                                            <td>
+                                                <!-- Button trigger modal -->
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal" th:attrappend="data-target=${obj.getId()}">
+                                                    Запустить модальное окно
+                                                </button>
+                                                <!-- EDIT USER MODAL WINDOW -->
+                                                <div class="modal fade" id="editModal" th:attrappend="id=${obj.getId()}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body justify-content-center align-items-center">
+                                                                <!-- Edit user form -->
+
+                                                                <form id="formUpdateUser"
+                                                                      th:attrappend="id=${obj.getId()}"
+                                                                      th:method="PATCH"
+                                                                      th:action="@{/admin/user-update/{id}(id=${obj.getId()})}">
+
+                                                                    <label for="id">ID</label>
+                                                                    <input readonly type="number"
+                                                                           th:value="${obj.getId()}"
+                                                                           th:name="id"
+                                                                           id="id"
+                                                                           placeholder="ID">
+                                                                    <br/>
+                                                                    <label for="firstName">First name</label>
+                                                                    <input type="text"
+                                                                           th:value="${obj.getFirstName()}"
+                                                                           th:name="firstName"
+                                                                           id="firstName"
+                                                                           placeholder="First Name">
+                                                                    <br/>
+                                                                    <label for="lastName">Last name</label>
+                                                                    <input type="text"
+                                                                           th:value="${obj.getLastName()}"
+                                                                           th:name="lastName"
+                                                                           id="lastName"
+                                                                           placeholder="Last Name">
+                                                                    <br/>
+                                                                    <label for="age">Age</label>
+                                                                    <input type="text"
+                                                                           th:value="${obj.getAge()}"
+                                                                           th:name="age"
+                                                                           id="age"
+                                                                           placeholder="Age">
+                                                                    <br/>
+                                                                    <label for="email">Email</label>
+                                                                    <input type="email"
+                                                                           th:value="${obj.getEmail()}"
+                                                                           th:name="email"
+                                                                           id="email"
+                                                                           placeholder="E-mail">
+                                                                    <br/>
+                                                                    <label for="password">Password</label>
+                                                                    <input type="password"
+                                                                           th:value="${obj.getPassword()}"
+                                                                           th:name="password"
+                                                                           id="password"
+                                                                           placeholder="Password">
+                                                                    <br/>
+                                                                    <label>Roles</label>
+
+                                                                    <select id="roles" th:value="${obj.getRoles()}" th:name="roles"  size="10" multiple="multiple">
+                                                                        <option th:each="role : ${rolesList}"
+                                                                                th:value="${role.id}"
+                                                                                th:text="${role.name}"
+                                                                                th:selected="(${obj.getRoles().contains(role)})" >
+                                                                        </option>
+                                                                    </select>
+                                                                    <br/>
+
+
+                                                                </form>
+
+                                                                <!-- End of Edit user form -->
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary" form="formUpdateUser" th:attrappend="form=${obj.getId()}">Save changes</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- END OF EDIT USER MODAL WINDOW -->
+
+
+                                            </td>
+                                            <td>
+                                                <form id="formDeleteUser"
+                                                      th:attrappend="id=${obj.getId()}"
+                                                      th:method="DELETE"
+                                                      th:action="@{/admin/user-delete/{id}(id=${obj.getId()})}">
+                                                    <input type="submit" class="btn btn-danger" value="Delete">
+                                                </form>
+                                            </td>
+
+                                        </tr>
+
+                                    </th:block>
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- create NEW USER
+    ================================================== -->
+                <!-- THIS TAB NOT WORKING NOW -->
+
+                <div class="tab-pane fade" id="create">
+                    <div class="container pt-0 ml-0 mr-0">
+
+                    </div>
+                </div>
+
+
+            </div>
+        </main>
+
     </div>
-    <p><a href="/admin/user-create">Create user</a></p>
-    </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    <script>
+        feather.replace()
+    </script>
+
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
