@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -36,9 +37,11 @@ public class UserController {
     }
 
     @GetMapping("/admin")
-    public String findAll(Model model) {
+    public String findAll(Model model, Principal principal) {
+        User user = userService.findByUsername(principal.getName()); // username == email
         List<User> users = userService.findAll();
         model.addAttribute("users", users);
+        model.addAttribute("authUser", user);
         return "user-list";
     }
 
@@ -48,6 +51,7 @@ public class UserController {
         List<User> users = new ArrayList<>();
         users.add(user);
         model.addAttribute("users", users);
+        model.addAttribute("authUser", user);
         return "user";
     }
 
@@ -86,16 +90,12 @@ public class UserController {
 
     @PatchMapping("/admin/user-update/{id}")
     public String updateUser(User user) {
-
-        System.out.println("++++++++++++++ВХОДЯЩИЙ ЮЗЕР ИЗ МОДАЛКИ EDIT++++++++++++++++++++++" + user.toString()+user.getPassword() + user.getEmail() + user.getFirstName());
         User oldUser = userService
                 .findById(user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + user.getId()));
 
-        if (!user.getPassword().isEmpty()) {
+        if (!user.getPassword().equals(oldUser.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-        } else {
-            user.setPassword(oldUser.getPassword());
         }
 
         userService.saveUser(user);
