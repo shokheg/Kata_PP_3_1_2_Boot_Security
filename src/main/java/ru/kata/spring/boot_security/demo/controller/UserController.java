@@ -5,7 +5,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -22,36 +21,36 @@ import java.util.List;
 @RequestMapping("/")
 public class UserController {
 
-//    private final UserService userService;
-//    private final RoleRepository roleRepository;
-//    private PasswordEncoder passwordEncoder;
-//
-//    @Autowired
-//    public UserController(UserService userService, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
-//        this.userService = userService;
-//        this.roleRepository = roleRepository;
-//        this.passwordEncoder = passwordEncoder;
-//    }
-//
-//    @GetMapping("/admin")
-//    public String findAll(Model model, Principal principal) {
-//        User user = userService.findByUsername(principal.getName()); // username == email
-//        List<User> users = userService.findAll();
-//        model.addAttribute("users", users);
-//        model.addAttribute("authUser", user);
-//        return "user-list";
-//    }
-//
-//    @GetMapping("/user")
-//    public String showCurrentUser(Model model, Principal principal) {
-//        User user = userService.findByUsername(principal.getName()); // username == email
-//        List<User> users = new ArrayList<>();
-//        users.add(user);
-//        model.addAttribute("users", users);
-//        model.addAttribute("authUser", user);
-//        return "user";
-//    }
-//
+    private final UserService userService;
+    private final RoleRepository roleRepository;
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserController(UserService userService, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @GetMapping("/admin")
+    public String findAll(Model model, Principal principal) {
+        User user = userService.findByUsername(principal.getName()); // username == email
+        List<User> users = userService.findAll();
+        model.addAttribute("users", users);
+        model.addAttribute("authUser", user);
+        return "user-list";
+    }
+
+    @GetMapping("/user")
+    public String showCurrentUser(Model model, Principal principal) {
+        User user = userService.findByUsername(principal.getName()); // username == email
+        List<User> users = new ArrayList<>();
+        users.add(user);
+        model.addAttribute("users", users);
+        model.addAttribute("authUser", user);
+        return "user";
+    }
+
 //    @GetMapping(value = "/admin/user-create")
 //    public String createUserForm(User user, Model model) {
 //        return "user-create";

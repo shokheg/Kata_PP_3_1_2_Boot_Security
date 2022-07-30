@@ -21,6 +21,7 @@ import java.util.Map;
  */
 
 @RestController
+@RequestMapping("/api")
 public class UserRestController {
     private final UserService userService;
     private final RoleRepository roleRepository;
@@ -33,48 +34,53 @@ public class UserRestController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/users")
     public ResponseEntity<?> findAll(Principal principal) {
         User user = userService.findByUsername(principal.getName()); // username == email
         List<User> users = userService.findAll();
         Map<String, Object> result = new HashMap<>();
         result.put("users", users);
         result.put("authUser", user);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(users, HttpStatus.OK);  //todo
     }
 
-    @GetMapping("/user")
+    @GetMapping("/user") //show AUTH USER
     public ResponseEntity<?> showCurrentUser(Principal principal) {
         User user = userService.findByUsername(principal.getName()); // username == email
-        List<User> users = new ArrayList<>();
-        users.add(user);
-        Map<String, Object> result = new HashMap<>();
-        result.put("users", users);
-        result.put("authUser", user);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/admin/roles")
+    @GetMapping("/users/{id}") //show user by ID
+    public ResponseEntity<?> findUserById(@PathVariable("id") Long id) {
+        User user = userService
+                .findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping("/roles")
     public ResponseEntity<List<Role>> getRolesList() {
         return new ResponseEntity<>(roleRepository.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/admin/user-create")
+    @PostMapping(value = "/users")
     public ResponseEntity<User> createUser(@RequestBody User user) {
+        System.out.println(user + "++++++++++++++++++++++++++++++++++++++");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.saveUser(user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/admin/user-delete/{id}")
+    @DeleteMapping(value = "/users/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
         userService.deleteById(id);
         return new ResponseEntity<>("User deleted", HttpStatus.OK);
     }
 
 
-    @PatchMapping("/admin/user-update/{id}")
+    @PatchMapping("/users")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
+        System.out.println(user + "++++++++++++++++++++++++++++++++++++++");
         User oldUser = userService
                 .findById(user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + user.getId()));
