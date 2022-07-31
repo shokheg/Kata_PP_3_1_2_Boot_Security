@@ -124,17 +124,33 @@ async function addNewUser() {
             }
         }
 
-        const data = {firstName: firstName, lastName: lastName, email: email, age: age, password: password, roles: roles
+        const data = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            age: age,
+            password: password,
+            roles: roles
         }
-        alert("ТЕСТ 1")
-        const response = await userFetchService.addNewUser(data)
-       console.log("МЫ ЗА ФУНКЦИЕЙ addNewUser")
-        if (response.ok) {
-            setTimeout(function(){
-                console.log("ПЕРЕГРУЗКА ТАБЛИЦЫ ЮЗЕРОВ В if");
-            }, 1000);
-            await mainTableWithUsers()
-        }
+
+        // const response = await userFetchService.addNewUser(data)  //не работает
+        // if (response.status !== 200) {
+        //     alert(response.status)
+        // } else {
+        //     await mainTableWithUsers()
+        // }
+
+        fetch('/api/users', { //todo
+            credentials: 'include',
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(console.log);
 
 
     })

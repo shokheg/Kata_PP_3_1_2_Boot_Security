@@ -21,6 +21,7 @@ import java.util.Map;
  */
 
 @RestController
+//@CrossOrigin(origins = "*", allowCredentials = "true", methods = {RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RequestMapping("/api")
 public class UserRestController {
     private final UserService userService;
