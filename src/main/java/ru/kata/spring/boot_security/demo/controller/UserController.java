@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -12,6 +13,7 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author shokhalevich
@@ -38,6 +40,10 @@ public class UserController {
         List<User> users = userService.findAll();
         model.addAttribute("users", users);
         model.addAttribute("authUser", user);
+        List<String> rolesList =
+      user.getRoles().stream()
+                .map(r -> r.getName().replace("ROLE_","")).collect(Collectors.toList());
+        model.addAttribute("rolesList", rolesList);
         return "user-list";
     }
 
@@ -48,55 +54,12 @@ public class UserController {
         users.add(user);
         model.addAttribute("users", users);
         model.addAttribute("authUser", user);
+        List<String> rolesList =
+                user.getRoles().stream()
+                        .map(r -> r.getName().replace("ROLE_","")).collect(Collectors.toList());
+        model.addAttribute("rolesList", rolesList);
         return "user";
     }
 
-//    @GetMapping(value = "/admin/user-create")
-//    public String createUserForm(User user, Model model) {
-//        return "user-create";
-//    }
-//
-//    @ModelAttribute("rolesList")
-//    public List<Role> getRolesList() {
-//        return roleRepository.findAll();
-//    }
-//
-//    @PostMapping(value = "/admin/user-create")
-//    public String createUser(User user) {
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        userService.saveUser(user);
-//        return "redirect:/admin";
-//    }
-//
-//    @DeleteMapping(value = "/admin/user-delete/{id}")
-//    public String deleteUser(@PathVariable("id") Long id) {
-//        userService.deleteById(id);
-//        return "redirect:/admin";
-//    }
-//
-//    @GetMapping(value = "/admin/user-update/{id}")
-//    public String updateUserForm(@PathVariable("id") Long id, Model model) {
-//
-//        User user = userService.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-//
-//        model.addAttribute("user", user);
-//        return "user-update";
-//    }
-//
-//    @PatchMapping("/admin/user-update/{id}")
-//    public String updateUser(User user) {
-//        User oldUser = userService
-//                .findById(user.getId())
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + user.getId()));
-//
-//        if (!user.getPassword().equals(oldUser.getPassword())) {
-//            user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        }
-//
-//        userService.saveUser(user);
-//        return "redirect:/admin";
-//    }
-//
 
 }

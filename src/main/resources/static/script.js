@@ -8,9 +8,8 @@ $(async function () {
 console.log("ЭТО НАДО ЗАЛОГИРОВАТЬ")
 const userFetchService = {
     head: {
-        'Accept': 'application/json',
+        //'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Referer': null
     },
 
     findAllUsers: async () => await fetch('api/users'),
@@ -47,8 +46,8 @@ async function mainTableWithUserId() {
                     <td>${user.lastName}</td>
                     <td>${user.age}</td>
                     <td>${user.email}</td>
-                    <td>${user.roles.map(role => role.name)}</td>
-                </tr>            
+                    <td>${user.roles.map(role => role.name.replace('ROLE_', ''))}</td>
+                </tr>
             )`
             table.append(tablePrincipal)
         })
@@ -56,11 +55,11 @@ async function mainTableWithUserId() {
 
 //=========ВЫВОД ОСНОВНОЙ ТАБЛИЦЫ=========ГОТОВО
 
-async function mainTableWithUsers() {
-    const usersList = document.querySelector('#mainTableWithUsers')
+async function mainTableWithUsers() {  //++++++++++++++++++++++++++++++++++++++++++
+    let usersList = document.querySelector('#mainTableWithUsers')
     let result = ''
     console.log("ВЫВОД ОСНОВНОЙ ТАБЛИЦЫ ЮЗЕРОВ")
-    await userFetchService.findAllUsers()
+    await userFetchService.findAllUsers()   //++++++++++++++++++++++++++++++
         .then(res => res.json())
         .then(users => users.forEach(user => {
             result += `
@@ -70,7 +69,7 @@ async function mainTableWithUsers() {
                     <td>${user.lastName}</td>
                     <td>${user.age}</td>
                     <td>${user.email}</td>
-                    <td>${user.roles.map(role => role.name)}</td>
+                    <td>${user.roles.map(role => role.name.replace('ROLE_',''))}</td>
                     <td>
                         <button type="button" data-userid="${user.id}" data-action="edit" class="btn btn-info"
                         data-toggle="modal" data-target="#defaultModal">Edit</button>
@@ -106,12 +105,12 @@ fetch('api/roles')
 
 //=============СОХРАНЕНИЕ НОВГО ЮЗЕРА
 async function addNewUser() {
-    $('#addNewUserButton').click(async () => {
+    $('#addNewUserButton').click(async (e) => {
         let addUserForm = $('#addUserForm')
-        let firstName = addUserForm.find('#nameNewUser').val().trim();
-        let lastName = addUserForm.find('#surnameNewUser').val().trim();
-        let age = addUserForm.find('#ageNewUser').val().trim();
+        let name = addUserForm.find('#nameNewUser').val().trim();
+        let surname = addUserForm.find('#surnameNewUser').val().trim();
         let email = addUserForm.find('#emailNewUser').val().trim();
+        let age = addUserForm.find('#ageNewUser').val().trim();
         let password = addUserForm.find('#passwordNewUser').val().trim();
         let rolesArray = addUserForm.find('#newRoles').val()
         let roles = []
@@ -124,35 +123,19 @@ async function addNewUser() {
             }
         }
 
-        const data = {
-            firstName: firstName,
-            lastName: lastName,
+        let data = {
+            firstName: name,
+            lastName: surname,
             email: email,
-            age: age,
+            age:age,
             password: password,
             roles: roles
         }
-
-        // const response = await userFetchService.addNewUser(data)  //не работает
-        // if (response.status !== 200) {
-        //     alert(response.status)
-        // } else {
-        //     await mainTableWithUsers()
-        // }
-
-        fetch('/api/users', { //todo
-            credentials: 'include',
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(console.log);
-
-
+        const response = await userFetchService.addNewUser(data);
+        if (!response.ok) {
+            console.log("=================ОТВЕТ СЕТИ НЕ ОК")
+            await mainTableWithUsers()
+        }
     })
 }
 

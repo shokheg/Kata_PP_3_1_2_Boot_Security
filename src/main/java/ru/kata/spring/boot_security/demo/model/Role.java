@@ -20,6 +20,11 @@ public class Role implements GrantedAuthority {
     @Column(name = "name")
     private String name;
 
+    public String getRoleName(){
+        return name.replace("ROLE_", "");
+    }
+
+
     @Override
     public String getAuthority() {
         return name;
